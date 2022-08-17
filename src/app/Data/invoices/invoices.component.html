@@ -1,0 +1,300 @@
+<div class="container ">
+    <br />
+    <div class="row ">
+      <div class="col">
+        <h3>Invoices</h3>
+      </div>
+      <div class="col text-right">
+        <button class="btn btn-info" data-toggle="modal" data-target="#add">Add Invioce <i  class="fas fa-plus-circle text-light"></i></button>
+      </div>
+  
+  
+    </div>
+    <div *ngIf='isLoading' class="spinner-border text-dark text-center " role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="search">
+      <input [(ngModel)]="term" class="form-control my-2 bg-dark text-light" type="text" placeholder="Enter To Search">
+    </div>
+  
+    <br/>
+    <table class="table table-bordered table-xl text-center ">
+  
+      
+      <tr class="bg-dark">
+        <th>Index</th>
+
+        <th>Invoice Date</th>
+        <th>Supplier/Name</th>
+        <th>Total Of Purchase</th>
+        <th>Invoices Image</th>
+        <th>View </th>
+        <th>Delete  </th>
+
+
+      </tr>
+        <tr *ngFor="let invoice of allInvoices |filter:term | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index  ">
+        <td>{{i}}</td>
+        <td>{{ invoice.invoiceDate |date}}</td>
+        <td>{{ invoice.supplier?.name }}</td>
+        <td>{{ invoice.totalOfPurchase }}</td>
+        <td><img [src]="baseImg+invoice.url" style="width:50px; height:50px" class="rounded-circle" alt=""></td>
+        <td class="add">
+          <button (click)="viewInvoice(invoice.invoiceId)" class="btn" data-toggle="modal" data-target="#invoice">
+          <i  class="fa-solid fa-user-pen text-success curoser-pointer"></i>              
+         </button>
+        </td>
+  
+        <td > 
+          <button (click)="getID(invoice?.invoiceId)" type="button" class="btn" data-toggle="modal" aria-label="Close" data-target="#delete" >
+          <i class="far fa-trash-alt text-danger"></i>
+         </button>
+         </td>
+    </tr> 
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  
+  </div> 
+  
+
+
+  <!--------------- Add ----------->
+<div class="modal fade  bd-example-modal-lg modal-add" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Invoice</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <div class="container">
+            <form [formGroup]="addInvoice" (ngSubmit)="submitInvoicesForm(addInvoice)">
+               
+            <div class="row">
+ 
+                
+                <!--  -->
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="content">
+                        <div class="form-group">
+                            <label for="supplierId">Supplier Name</label>
+                            <select name="" id="" class="custom-select" formControlName="supplierId" (change)="filterUnit($event)">
+                                <option style="background-color:#343a40 ; color: #fff;" [value]="0" selected ></option>
+                                <option [value]="supplier.supplierId" *ngFor='let supplier of allSuppliers; let i = index'>{{supplier.supplierName}}</option>
+                            </select>
+                            <div *ngIf="addInvoice.get('supplierId')?.errors != null && addInvoice.get('supplierId')?.touched" class=" alert  my-2">
+                                <p  *ngIf="addInvoice.get('supplierId')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <!--  -->
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="content">
+                        <div class="form-group">
+                            <label for="invoiceDate">Invoice Date</label>
+                            <input formControlName="invoiceDate" type="date" class="form-control">
+                            <div *ngIf="addInvoice.get('invoiceDate')?.errors != null && addInvoice.get('invoiceDate')?.touched" class=" alert  my-2">
+                                <p  *ngIf="addInvoice.get('invoiceDate')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+   
+                <!--  -->
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                  <div class="content">
+                      <div class="form-group">
+                          <label for="totalPurchase">Total Purchase</label>
+                          <input  [(ngModel)]="totalPurchase" [ngModelOptions]="{standalone: true}" type="number" readonly class="form-control text-blue">
+                    
+                      </div>
+                  </div>
+              </div>
+                <!--  -->
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                    <div class="product-image">
+                        <label for="Image">Invoice Image</label>
+                        <img src="{{url}}" alt="">
+                        <input type="file" class="form-control" (change)="onFileChanged($event)" required="required">
+                        <div *ngIf="addInvoice.get('url')?.errors != null && addInvoice.get('url')?.touched" class=" alert  my-2">
+                            <p  *ngIf="addInvoice.get('url')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+                         </div>
+                    </div>
+                </div>
+                <!--  -->
+
+                <div class="col text-right my-2">
+                    <button (click)="resetForm()" type="button" class="btn btn-info" data-toggle="modal" data-target="#add-2">Add Item <i  class="fas fa-plus-circle text-light"></i></button>
+                  </div>
+                <table class="table table-bordered table-xl text-center ">
+  
+      
+                    <tr class="bg-dark">
+                      <th>Index</th>
+                      <th>Item Name</th>
+                      <th>Count</th>
+                      <th>Price</th>
+                      <th>Discount</th>
+                      <th>apd Total Cost</th>
+
+              
+                    </tr>
+                      <tr *ngFor="let item of itemsContainer |filter:term  ; let i = index  ">
+
+                        <td>{{i}}</td>
+                        <td>{{getItemName(item.itemId)}}</td>
+                        <td>{{item.count}} </td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.discount}}</td>
+                        <td>{{item.apdTotalCost}}</td>
+                        
+                  </tr> 
+                  </table>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" [disabled]="addInvoice.invalid">Submit </button>
+              </div>
+        </form>
+
+    
+
+           </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+
+
+  <!-- -----------Add-2-------------- -->
+ 
+
+
+<div class="modal fade  bd-example-modal-lg" id="add-2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-form-select (outColectItems)="collectItems($event)"></app-form-select>
+
+      </div>
+  
+    </div>
+  </div>
+</div>
+
+
+  <!-- --------------------delete0---------- -->
+
+  <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title text-dark" id="exampleModalLabel"> </h5>
+  
+        </div>
+        <div class="modal-body">
+          <h4 class=" text-danger text-right"> Are you sure you want to delete</h4>
+        </div>
+        <div class="modal-footer">
+          <button (click)="deleteInvoice()"  class="btn btn-danger" aria-hidden="true" aria-label="Close" >Confirm Delete <i class="far fa-trash-alt text-light"></i></button>
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cancle  <i class="fas fa-undo"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <!-- view-------------- -->
+
+
+  <div class="modal fade  bd-example-modal-lg vhd1" id="invoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"> Invoice Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body vhd1">
+           <div class="container">
+
+                <div class="row">
+
+                  <div class="col-md-6 text-center">
+                     <div class="content ">
+                      <h4 class="text-info ">Supplier Name :</h4>
+                      <h5 class="my-2">{{currentInvoice?.supplier.name}}</h5>
+                      <h4 class="text-info">Total Of Purchase :</h4>
+                      <h5 class="my-2">{{currentInvoice?.totalOfPurchase}}</h5>
+                
+                     </div>
+                      <div>
+                  </div>
+
+
+                </div>
+                <!--  -->
+               <div class="col-md-6 text-center">
+                <h4 class="text-info">Invoice Date :</h4>
+                <h5 class="my-2">{{currentInvoice?.invoiceDate | date}}</h5>
+               </div>
+
+               <table class="table table-bordered table-xl text-center ">
+  
+      
+                <tr class="bg-dark">
+                  <th>Index</th>
+                  <th>Item Name</th>
+                  <th>Unit Item</th>
+                  <th>Count</th>
+                  <th>Price</th>
+                  <th>Discount</th>
+                  <th>apd Total Cost</th>
+
+          
+                </tr>
+                  <tr *ngFor="let item of currentInvoice?.invoiceDetails |filter:term  ; let i = index  ">
+
+                    <td>{{i}}</td>
+                    <td>{{item.item?.name}}</td>
+                    <td>{{item.item.unit?.name}}</td>
+                    <td>{{item.count}} </td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.discount}}</td>
+                    <td>{{item.apdTotalCost}}</td>
+                    
+              </tr> 
+              </table>
+
+                <h4 class="text-info">Invoice Image :</h4>
+
+                <div class="img">
+                  <img [src]='imgUrl' class="w-100 img-content" alt=""> 
+                </div>
+
+
+          
+    
+
+           </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,24 @@
+.navbar-nav a
+{
+    color: #fff;
+    font-size: 16px;
+}
+.active
+{
+    color: #fff;
+    border-radius: 15px;
+}
+.active a
+{
+    background: #343a40;
+    color: #fff;
+    border-radius: 15px;
+   border: #fff solid 1px;
+}
+
+.user-img
+{
+    width: 35px;
+    height: 35px;
+   border-radius: 50%;
+}

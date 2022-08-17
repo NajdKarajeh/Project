@@ -1,0 +1,137 @@
+<div class="container ">
+    <br />
+    <div class="col">
+      <h3>Reports</h3>
+    </div>
+      
+      
+      <form [formGroup]="report" (ngSubmit)="getReport(report)">
+        <div class="d-flex">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="invoiceDate"> Date From</label>
+                <input type="date" formControlName="from" class="form-control">
+              </div>
+            </div>
+    
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="invoiceDate"> Date To</label>
+                <input type="date" formControlName="to" class="form-control">
+              </div>
+            </div>
+          </div>
+    
+          <div class="col text-right">
+            <button type="submit" class="btn btn-info">Get Report </button>
+          </div>
+        </div>
+      </form>
+  
+  
+    <div *ngIf='isLoading' class="spinner-border text-dark text-center " role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="search">
+      <input [(ngModel)]="term" class="form-control my-2 bg-dark text-light" type="text" placeholder="Enter To Search">
+    </div>
+  
+
+    <h3>Invoices</h3>
+    <table class="table table-bordered table-xl text-center my-3 ">
+   
+      
+      <tr class="bg-dark">
+        <th>Index</th>
+        <th> Date</th>
+        <th>Supplier/Name</th>
+        <th> Total Purchase</th>
+        <th>Count</th>
+        <th>Price</th>
+        <th>discount</th>
+        <th>apdTotalCost</th>
+
+        <th> Deleted</th>
+
+      </tr>
+        <tr *ngFor="let item of invoices |filter:term  ; let i = index  ">
+
+          <td>{{i}}</td>
+          <td>{{item.invoiceDate| date}} </td>
+          <td>{{item.supplier.name}} </td>
+          <td>{{item.totalOfPurchase}} </td>
+          <td>{{item.invoiceDetails[0]?.count}} </td>
+          <td>{{item.invoiceDetails[0]?.price}} </td>
+          <td>{{item.invoiceDetails[0]?.discount}} </td>
+          <td>{{item.invoiceDetails[0]?.apdTotalCost}} </td>
+          <td *ngIf="item.deleted==true" class="text-danger">  Yes </td>
+          <td  *ngIf="item.deleted==false" class="text-success"> No </td>
+
+    </tr> 
+    </table>
+
+    <!--  -->
+    <h3>Sales</h3>
+    <table class="table table-bordered table-xl text-center my-3 ">
+   
+      
+      <tr class="bg-dark">
+        <th>Index</th>
+        <th>Date</th>
+        <th>Item</th>
+        <th>Count</th>
+        <th>description</th>
+        <th>Unit/Name</th>
+
+
+
+
+      </tr>
+        <tr *ngFor="let item of sales |filter:term  ; let i = index  ">
+
+          <td>{{i}}</td>
+          <td>{{item.consumingDate}} </td>
+          <td>{{item.item?.name}} </td>
+          <td>{{item.count}} </td>
+          <td>{{item.item?.description}} </td>
+          <td>{{item.item?.name}} </td>
+
+
+
+
+          
+    </tr> 
+    </table>
+    <br/>
+
+    <!--  -->
+    <h3>Stock</h3>
+    <table class="table table-bordered table-xl text-center my-3 ">
+   
+      
+      
+      <tr class="bg-dark">
+        <th>Index</th>
+        <th>Item Name</th>
+        <th>Unit Namme</th>
+        <th>description</th>
+        <th>storage</th>
+
+
+
+      </tr>
+        <tr *ngFor="let item of stock |filter:term  ; let i = index  ">
+
+          <td>{{i}}</td>
+          <td>{{item.item?.name}} </td>
+          <td>{{item.item?.unit?.name}} </td>
+          <td>{{item.item?.description}}</td>
+          <td>{{item.storage}}</td>
+
+          
+    </tr> 
+    </table>
+   
+  
+  </div>

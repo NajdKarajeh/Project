@@ -1,0 +1,41 @@
+<div class="container ">
+    <br />
+    <div class="row ">
+      <div class="col">
+        <h3>Stock</h3>
+      </div>
+
+  
+  
+    </div>
+    <div *ngIf='isLoading' class="spinner-border text-dark text-center " role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="search">
+      <input [(ngModel)]="term" class="form-control my-2 bg-dark text-light" type="text" placeholder="Enter To Search">
+    </div>
+  
+    <br/>
+    <table class="table table-bordered table-xl text-center ">
+  
+      
+      <tr class="bg-dark">
+        <th>Index</th>
+        <th>Stock Number</th>
+        <th>Storage</th>
+        <th>name</th>
+      </tr>
+        <tr *ngFor="let stock of allStock |filter:term | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index  ">
+        <td>{{i}}</td>
+        <td>{{ stock.stockNumber }}</td>
+        <td>{{ stock.storage }}</td>
+        <td>{{ stock.name  }}</td>
+
+  
+  
+      </tr> 
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  
+  </div> 
+  

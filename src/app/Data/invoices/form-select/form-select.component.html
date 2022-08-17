@@ -1,0 +1,51 @@
+
+
+
+
+
+
+
+  <form [formGroup]="ItemForm" (ngSubmit)="collectItems(ItemForm)">
+    <div class="form-group">
+        <label for="itemId">Item Name</label>
+        <select name="" id="" class="custom-select" formControlName="itemId" (change)="filterUnit($event)">
+            <option style="background-color:#343a40 ; color: #fff;" value="" selected ></option>
+            <option [value]="item.id" *ngFor='let item of allItems; let i = index'><div>{{item.name}}</div>
+            </option>
+
+        </select>
+        <div *ngIf="ItemForm.get('itemId')?.errors != null && ItemForm.get('itemId')?.touched" class=" alert  my-2">
+            <p  *ngIf="ItemForm.get('itemId')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+         </div>
+
+    </div>
+
+  <!--  -->
+  <label for="">Count </label>
+  <input type="number" required="required" formControlName="count"  class="form-control"  min="0">
+  <div *ngIf="ItemForm.get('count')?.errors != null && ItemForm.get('count')?.touched" class=" alert  my-2">
+    <p  *ngIf="ItemForm.get('count')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+ </div>
+
+  <!--  -->
+  <label for="">Price</label>
+  <input type="number" formControlName="price" class="form-control" required="required" min="0">
+   <!--  -->
+   <div *ngIf="ItemForm.get('price')?.errors != null && ItemForm.get('price')?.touched" class=" alert  my-2">
+    <p  *ngIf="ItemForm.get('price')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+ </div>
+    <!--  -->
+  <label for="">Discount</label>
+  <input (blur)="checkDiscount()" type="number" formControlName="discount" class="form-control" required="required" min="0">
+  <div *ngIf="ItemForm.get('discount')?.errors != null && ItemForm.get('discount')?.touched" class=" alert  my-2">
+    <p  *ngIf="ItemForm.get('discount')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+ </div>
+   <!-- <label for="">apdTotalCost</label>
+  <input type="number" formControlName="apdTotalCost" readonly class="form-control" required="required" min="0"> -->
+
+  
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" [disabled]="ItemForm.invalid">Add </button>
+  </div>
+ </form>

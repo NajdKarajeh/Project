@@ -1,0 +1,50 @@
+<div class="login-page">
+  <div class="form">
+    <div class="login">
+      <div class="login-header">
+        <h3>Register Form</h3>
+        <p>Please Completed All Filds</p>
+      </div>
+    </div>
+    <form class="login-form" [formGroup]="registerForm">
+      <input formControlName="userName" type="text" placeholder="Enter Your First Name"/>
+      <div *ngIf="registerForm.get('userName')?.errors !=null && registerForm.get('userName')?.touched" class="alert my-2">
+        <p *ngIf="registerForm.get('userName')?.errors?.required " class="my-2 text-danger" >User Name Is Required</p>
+      </div>
+      <!--  -->
+
+      <input formControlName="email" type="email" placeholder="Enter Your Email"/>
+      <div *ngIf="registerForm.get('email')?.errors !=null && registerForm.get('email')?.touched" class="alert my-2">
+        <p *ngIf="registerForm.get('email')?.errors?.required " class="my-2 text-danger" >Email Is Required</p>
+      </div>
+      <!--  -->
+      <input formControlName="password" required="required" type="password" placeholder="Enter Your Password"/>
+      <div *ngIf="registerForm.get('password')?.errors !=null && registerForm.get('password')?.touched" class="alert my-2">
+        <p *ngIf="registerForm.get('password')?.errors?.required " class="my-2 text-danger" >Password Is Required</p>
+      </div>
+      <!--  -->
+      <input formControlName="phoneNumber" type="text" maxlength="10" min="0" placeholder="Enter Your Phone Number"/>
+      <div *ngIf="registerForm.get('phoneNumber')?.errors !=null && registerForm.get('phoneNumber')?.touched" class="alert my-2">
+        <p *ngIf="registerForm.get('phoneNumber')?.errors?.required " class="my-2 text-danger" >Phone Number Is Required</p>
+      </div>
+      <!--  -->
+
+     <div class="my-2">
+      <label for="">Chose City</label>
+      <select class="custom-select" (change)="filterCity($event)" formControlName="addressId" >
+        <option style="background-color:#343a40 ; color: #fff;" [value]="0" selected > </option>
+        <option *ngFor='let city of allAdress; let i = index '
+          [value]="city?.addressId">{{city?.homeLocation}} / {{city.city}}
+        </option>
+          <p *ngIf="registerForm.get('addressId')?.errors?.required " class="my-2 text-danger" >Adress Is Required</p>
+      </select>
+     </div>
+      
+
+  
+
+      <button  (click)="submitRigisterForm()" [disabled]="registerForm.invalid" type="submit">Register</button>
+      <p class="message">I have Account <a routerLink="/login">Go to Login</a></p>
+    </form>
+  </div>
+</div>

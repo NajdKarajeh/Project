@@ -1,0 +1,196 @@
+
+<!-- <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner> -->
+
+<div class="container ">
+  <br />
+  <div class="row ">
+    <div class="col">
+      <h3>Supplier</h3>
+    </div>
+    <div class="col text-right">
+      <button class="btn btn-info" data-toggle="modal" data-target="#add">Add Supplier <i  class="fas fa-plus-circle text-light"></i></button>
+    </div>
+
+
+  </div>
+  <div *ngIf='isLoading' class="spinner-border text-dark text-center " role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div class="search">
+    <input [(ngModel)]="term" class="form-control my-2 bg-dark text-light" type="text" placeholder="Enter To Search">
+  </div>
+
+  <br/>
+  <table class="table table-bordered table-xl text-center ">
+
+    <tr class="bg-dark">
+      <th>Index</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Number</th>
+      <th>Location</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+      <tr *ngFor="let supplier of allSuppliers |filter:term | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index  ">
+      <td>{{i}}</td>
+      <td>{{ supplier.supplierName }}</td>
+      <td>{{ supplier.supplierPhone }}</td>
+      <td>{{ supplier.supplierNumber }}</td>
+      <td>{{ supplier.supplierLocation }}</td>
+
+   
+      <td class="add">
+        <button (click)="getId(supplier?.supplierId);setValue();" class="btn" data-toggle="modal" aria-label="Close" data-target="#edit">
+        <i  class="fa-solid fa-user-pen text-success curoser-pointer"></i>              
+       </button>
+      </td>
+
+      <td > 
+        <button (click)="getId(supplier?.supplierId)" type="button" class="btn" data-toggle="modal" aria-label="Close" data-target="#delete" >
+        <i class="far fa-trash-alt text-danger"></i>
+       </button>
+       </td>
+
+    </tr> 
+  </table>
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+
+</div> 
+
+
+
+<!--------------- Add ----------->
+<div class="modal fade  bd-example-modal-lg" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <form [formGroup]="addSupplier">
+        <label for="">Supplier Name</label>
+        <input type="text" formControlName="supplierName" class="form-control" required="required">
+        <div *ngIf="addSupplier.get('supplierName')?.errors != null && addSupplier.get('supplierName')?.touched" class=" alert  my-2">
+          <p  *ngIf="addSupplier.get('supplierName')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+         </div>
+        <!--  -->
+        <label for="">Supplier Phone</label>
+        <input type="tel" formControlName="supplierPhone" required="required"  class="form-control" maxlength="10" minlength="10">
+        <div *ngIf="addSupplier.get('supplierPhone')?.errors != null && addSupplier.get('supplierPhone')?.touched" class=" alert  my-2">
+          <p  *ngIf="addSupplier.get('supplierPhone')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+          <p *ngIf="addSupplier.get('supplierPhone')?.errors?.min"  class=" my-2 text-danger"> Min Number 10 </p>
+          <p *ngIf="addSupplier.get('supplierPhone')?.errors?.max"  class=" my-2 text-danger " >  Max Number 10 </p>
+
+         </div>
+        <!--  -->
+        <label for="">Supplier Number</label>
+        <input type="number" formControlName="supplierNumber" class="form-control" required="required" min="0">
+        <div *ngIf="addSupplier.get('supplierNumber')?.errors != null && addSupplier.get('supplierNumber')?.touched" class=" alert  my-2">
+          <p  *ngIf="addSupplier.get('supplierNumber')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+         </div>
+        <!--  -->
+        <label for="">Supplier Location </label>
+        <input type="text" formControlName="supplierLocation" class="form-control" required="required">
+        <div *ngIf="addSupplier.get('supplierLocation')?.errors != null && addSupplier.get('supplierLocation')?.touched" class=" alert  my-2">
+          <p  *ngIf="addSupplier.get('supplierLocation')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+         </div>
+       </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button  (click)="addedData()" type="button" class="btn btn-primary">Add </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ---------delete--------- -->
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title text-dark" id="exampleModalLabel"> </h5>
+
+      </div>
+      <div class="modal-body">
+        <h4 class=" text-danger text-right"> Are you sure you want to delete</h4>
+      </div>
+      <div class="modal-footer">
+        <button (click)="deleteSuppl()"  class="btn btn-danger" aria-hidden="true" aria-label="Close" >Confirm Delete <i class="far fa-trash-alt text-light"></i></button>
+        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cancle  <i class="fas fa-undo"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!----------------- Edite User --------------- -->
+  <!-- Modal -->
+  <div class="modal fade " id="edit" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Edit Supplier</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="updateSupplier">
+
+         <div class="container-fluid text-info">
+              <div class="col-md-12 ">
+               <div class="content-1">
+                 <label for="edit-name">Supplier Name </label>
+                 <input class="form-control"  type="text" formControlName="supplierName" >
+               </div>
+             </div>
+             <!--  -->
+             <div class="col-md-12">
+              <div class="content-1">
+                <label for="edit-phone">Supplier Phone </label>
+                <input class="form-control" type="tel" formControlName="supplierPhone" maxlength="10" minlength="10" >
+                <div *ngIf="updateSupplier.get('supplierPhone')?.errors != null && updateSupplier.get('supplierPhone')?.touched" class=" alert  my-2">
+                  <p  *ngIf="updateSupplier.get('supplierPhone')?.errors?.required" class=" my-2 text-danger"> This Input Is Required  </p>
+                  <p *ngIf="updateSupplier.get('supplierPhone')?.errors?.min"  class=" my-2 text-danger"> Min Number 10 </p>
+                  <p *ngIf="updateSupplier.get('supplierPhone')?.errors?.max"  class=" my-2 text-danger " >  Max Number 10 </p>
+        
+                 </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-md-12">
+              <div class="content-1">
+                <label for="edit-email">Supplier Number</label>
+                <input class="form-control" type="number"  formControlName="supplierNumber">
+              </div>
+            </div>
+            <!--  -->
+            <div class="col-md-12">
+              <div class="content-1">
+                <label for="edit-country">Supplier Location</label>
+                <input class="form-control" type="text" formControlName="supplierLocation">
+              </div>
+            </div>
+
+            <!--  -->
+           
+           </div>
+        </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          <button (click)="editData()" type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>

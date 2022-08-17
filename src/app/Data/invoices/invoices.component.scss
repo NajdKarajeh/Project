@@ -1,0 +1,47 @@
+button
+{
+    border-radius: 15px;
+}
+
+.search input
+{
+   border-radius: 15px;
+}
+
+.container
+{
+    padding-left: 70px;
+    margin: auto;
+}
+
+.modal-add
+{
+    img{
+        width: 100%;
+        max-height: 100%;
+        object-fit:fill;
+    }
+
+    h5
+    {
+        color: #343a40;
+    }
+    input
+    {
+        border-radius: 16px;
+        color:#343a40;
+        border: #343a40 solid 1px;   
+    }
+    select
+    {
+        border-radius: 16px;
+        color:#343a40;
+        border: #343a40 solid 1px;   
+    }
+}
+
+table
+{
+    margin-top: 20px;
+}
+
